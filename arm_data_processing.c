@@ -27,7 +27,7 @@ Contact: Guillaume.Huard@imag.fr
 #include "util.h"
 #include "debug.h"
 
-int execute_ins(arm_core p, uint32_t ins, uint32_t Sop){
+int execute_ins(arm_core p, uint32_t ins, uint32_t Sop, uint8_t sco){
 	reg_fields rf;
 	uint32_t res;
 	int x = 0 ;
@@ -73,7 +73,7 @@ int execute_ins(arm_core p, uint32_t ins, uint32_t Sop){
 			else return UNDEFINED_INSTRUCTION;
 		}
 		else if(rf.S || x)
-			arm_write_cpsr(p, update_flags(arm_read_cpsr(p), rf.opcode, res, 0));
+			arm_write_cpsr(p, update_flags(arm_read_cpsr(p), rf, res, sco));
 	}
 	return 0;
 }
@@ -85,13 +85,19 @@ int arm_data_processing_shift(arm_core p, uint32_t ins) {
 	bit4 = get_bit(ins, 4);
 	shift = get_bits(ins, 6, 5);*/
 
-    return execute_ins(p, ins, 0);
+    return execute_ins(p, ins, 0, 0);
 }
 
 int arm_data_processing_immediate_msr(arm_core p, uint32_t ins) {
 	uint8_t rotImm, imm;
+	uint8_t sco; //Shifter carry out
+	uint32_t Sop; //Shifter operand
+
 	rotImm = get_bits(ins, 11, 8);
 	imm = get_bits(ins, 7, 0);
-	
-	return execute_ins(p, ins, ror(imm, rotImm * 2));
+	Sop = ror(imm, rotImm * 2);
+
+	imm ? (sco = get_bit(Sop, 31)) : (sco = get_bit(arm_read_cpsr(p), C));
+
+	return execute_ins(p, ins, Sop, sco);
 }
