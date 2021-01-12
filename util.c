@@ -127,3 +127,7 @@ uint32_t update_flags(uint32_t reg, reg_fields rf, uint32_t res, uint8_t sco){
 
 	return reg;
 }
+
+void mod_bit(uint32_t *reg, int b, int pos){
+	b ? (*reg = set_bit(*reg, pos)) : (*reg = clr_bit(*reg, pos));
+}

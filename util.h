@@ -80,8 +80,6 @@ void extract_data_proc_fields(uint32_t ins, reg_fields *rf, uint32_t RnVal, uint
 */
 uint32_t update_flags(uint32_t reg, reg_fields rf, uint32_t res, uint8_t sco);
 
-void mod_bit(uint32_t *reg, int b, int pos){
-	b ? (*reg = set_bit(*reg, pos)) : (*reg = clr_bit(*reg, pos));
-}
+void mod_bit(uint32_t *reg, int b, int pos);
 
 #endif
