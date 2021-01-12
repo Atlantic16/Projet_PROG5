@@ -97,10 +97,16 @@ void extract_data_proc_fields(uint32_t ins, reg_fields *rf, uint32_t RnVal, uint
 	rf->Sop = Sop;
 }
 
-uint32_t update_flags(uint32_t reg, uint8_t opcode, uint32_t res, uint8_t sco){
+uint32_t update_flags(uint32_t reg, reg_fields rf, uint32_t res, uint8_t sco){
+	uint32_t maxVal = ~0;
+	uint8_t carryOut = 0;
+	uint8_t lastCarry = (get_bit(rf.Sop, 31) ^ get_bit(rf.RnVal, 31)) == get_bit(res, 31);
+
+	//Updating N and Z
 	get_bit(res, 31) ? (reg = set_bit(reg, N)) : (reg = clr_bit(reg, N));
 	res == 0 ? (reg = set_bit(reg, Z)) : (reg = clr_bit(reg, Z));
-	switch(opcode){
+
+	switch(rf.opcode){
 		case 0b0000: //AND
 		case 0b0001: //EOR
 		case 0b1000: //TST
@@ -110,23 +116,14 @@ uint32_t update_flags(uint32_t reg, uint8_t opcode, uint32_t res, uint8_t sco){
 		case 0b1110: //BIC
 		case 0b1111: //MVN
 			mod_bit(&reg, sco, C);
-		break;
-
-		case 0b0010: //SUB
-		case 0b0011: //RSB
-		case 0b1010: //CMP
-		break;
-
-		case 0b0100: //ADD
-		case 0b1011: //CMN
-		break;
-
-		case 0b0110: //SBC
-		case 0b0111: //RSC
-		break;
-
-		case 0b0101: //ADC
-		break;
+			return reg;
 	}
+
+	if(rf.opcode == 0b0110 || rf.opcode == 0b0111 || rf.opcode == 0b0101)
+		carryOut = get_bit(reg, C);
+
+	(rf.Sop <= maxVal + (~rf.RnVal + 1) + (~carryOut + 1)) ? mod_bit(&reg, 0, C) : mod_bit(&reg, 1, C);
+	mod_bit(&reg, lastCarry ^ get_bit(reg, C) , V);
+
 	return reg;
 }

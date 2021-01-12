@@ -78,7 +78,7 @@ void extract_data_proc_fields(uint32_t ins, reg_fields *rf, uint32_t RnVal, uint
 /* Function that update flags in CPSR register
  * Returns updated CPSR
 */
-uint32_t update_flags(uint32_t reg, uint8_t opcode, uint32_t res, uint8_t sco);
+uint32_t update_flags(uint32_t reg, reg_fields rf, uint32_t res, uint8_t sco);
 
 void mod_bit(uint32_t *reg, int b, int pos){
 	b ? (*reg = set_bit(*reg, pos)) : (*reg = clr_bit(*reg, pos));
