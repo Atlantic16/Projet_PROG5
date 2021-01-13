@@ -29,7 +29,31 @@ Contact: Guillaume.Huard@imag.fr
 #include "util.h"
 
 static int arm_execute_instruction(arm_core p) {
-    return 0;
+    uint32_t ins;
+    uint8_t class, bit4, bit7;
+
+    if(!arm_fetch(p, &ins)) return 0;
+
+    class = get_bits(ins, 27, 25);
+    bit4 = get_bit(ins, 4);
+    bit7 = get_bit(ins, 7);
+
+    switch(class){
+    	case 0b000: 
+    		if(bit4 == 1 && bit7 == 1)
+    			return arm_miscellaneous(p, ins);
+    		else
+    			return arm_data_processing_shift(p, ins);
+    	break;
+    	case 0b001: return arm_data_processing_immediate_msr(p, ins);
+    	break;
+    	case 0b101: return arm_branch(p, ins);
+    	break;
+    	case 0b111: return arm_coprocessor_others_swi(p, ins);
+    	default: 
+    		printf("Unknown instruction.\n");
+    		return 1;
+    }
 }
 
 int arm_step(arm_core p) {
