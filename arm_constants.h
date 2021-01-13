@@ -97,6 +97,11 @@ Contact: Guillaume.Huard@imag.fr
 #define PC 15
 #define CPSR 16
 
+
+//mode addressing
+#define IMM 0
+#define REG 1
+
 char *arm_get_exception_name(unsigned char exception);
 char *arm_get_mode_name(uint8_t mode);
 char *arm_get_register_name(uint8_t reg);

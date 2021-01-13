@@ -131,3 +131,142 @@ uint32_t update_flags(uint32_t reg, reg_fields rf, uint32_t res, uint8_t sco){
 
 	return reg;
 }
+
+
+
+void do_shift(uint32_t * Sop, uint8_t * sco , uint32_t data , uint32_t val_Rm ,uint8_t shift , int mode){
+switch (mode) {
+  case 0 :
+          switch (shift) {
+            case 0b00:
+                          if ( data == 0 ) {
+                            *Sop = val_Rm ;
+                            *sco = get_bit(arm_read_cpsr(p), C) ;
+
+                          }
+                          else /* shift_imm > 0 */{
+                            *Sop = val_Rm << data ;
+                            *sco = get_bit(val_Rm, 32 - data ) ;
+                          }
+
+            break ;
+            case 0b01:
+                          if ( data == 0 ) {
+                            *Sop = 0 ;
+                            *sco = get_bit(val_Rm, 31) ;
+
+                          }
+                          else /* shift_imm > 0 */{
+                            *Sop = val_Rm >> data ;
+                            *sco = get_bit(val_Rm, data - 1  ) ;
+                          }
+            break ;
+            case 0b10:
+                          if ( data == 0 ) {
+                            if ( get_bit(val_Rm,31) ){
+                              *Sop = 0xFFFFFF ;
+                              *sco = 1 ;
+                            }
+                            else{
+                              *Sop = 0 ;
+                              *sco = 0 ;
+                            }
+                          }
+                          else /* shift_imm > 0 */{
+                            *Sop = asr( val_Rm , data ) ;
+                            *sco = get_bit(val_Rm, data - 1  ) ;
+                          }
+            break ;
+            case 0b11:
+                          if ( data == 0 ) {
+                            *Sop = ( get_bit(arm_read_cpsr(p), C) >> 31 ) | ( val_Rm << 1) ;
+                            *sco = get_bit(Rm,0);
+                          }
+                          else /* shift_imm > 0 */{
+                            *Sop = ror( val_Rm , data ) ;
+                            *sco = get_bit(val_Rm, data - 1  ) ;
+                          }
+
+
+            break ;
+          }
+
+  break ;
+  case 1 :
+        uint8_t temp = get_bits(data,7,0);
+        if ( ! temp ){
+          *Sop = val_Rm ;
+          *sco = get_bit(arm_read_cpsr(p), C) ;
+        }
+        else {
+          switch (shift) {
+            case 0b00:
+                      if (temp < 32) {
+                        *Sop = val_Rm << temp ;
+                        *sco = get_bit(val_Rm, 32 - temp ) ;
+                      }
+                      else if( temp == 32 ){
+                        *Sop = 0 ;
+                        *sco = get_bit(val_Rm, 0 ) ;
+                      }
+                      else{
+                        *Sop = 0 ;
+                        *sco = 0 ;
+                      }
+            break ;
+
+
+            case 0b01:
+                      if (temp < 32) {
+                        *Sop = val_Rm >> temp ;
+                        *sco = get_bit(val_Rm, temp - 1  ) ;
+                      }
+                      else if( temp == 32 ){
+                        *Sop = 0 ;
+                        *sco = get_bit(val_Rm, 31 ) ;
+                      }
+                      else{
+                        *Sop = 0 ;
+                        *sco = 0 ;
+                      }
+            break ;
+
+            case 0b10:
+                      if (temp < 32) {
+                        *Sop = asr(val_Rm , temp ) ;
+                        *sco = get_bit(val_Rm, temp - 1  ) ;
+                      }
+                      else {
+                        if ( get_bit(val_Rm,31) ){
+                          *Sop = 0xFFFFFF ;
+                          *sco = 1 ;
+                        }
+                        else{
+                          *Sop = 0 ;
+                          *sco = 0 ;
+                        }
+                      }
+            break ;
+
+            case 0b11:
+            uint8_t temp2 = get_bits(val_Rm,4,0);
+            if(temp2==0){
+              *Sop = val_Rm ;
+              *sco = get_bit(val_Rm,31) ;
+            }
+            else{
+              *Sop = ror(val_Rm , temp2) ;
+              *sco = get_bit(val_Rm, temp2-1) ;
+            }
+
+            break ;
+          }
+        }
+
+
+  break ;
+
+}
+
+
+}

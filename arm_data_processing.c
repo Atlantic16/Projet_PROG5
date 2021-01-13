@@ -37,7 +37,7 @@ int execute_ins(arm_core p, uint32_t ins, uint32_t Sop, uint8_t sco){
 	if(cond_valid(rf.cond, arm_read_cpsr(p))){
 		switch(rf.opcode){
 			case 0b1000: x = 1 ; //TST
-			case 0b0000: res = rf.RnVal & rf.Sop; //AND 
+			case 0b0000: res = rf.RnVal & rf.Sop; //AND
 			break;
 			case 0b1001: x = 1 ; //TEQ
 			case 0b0001: res = rf.RnVal ^ rf.Sop; //EOR
@@ -80,13 +80,26 @@ int execute_ins(arm_core p, uint32_t ins, uint32_t Sop, uint8_t sco){
 
 /* Decoding functions for different classes of instructions */
 int arm_data_processing_shift(arm_core p, uint32_t ins) {
-	/*uint8_t Rm, shift, bit4;
-	Rm = get_bits(ins, 3, 0);
-	bit4 = get_bit(ins, 4);
-	shift = get_bits(ins, 6, 5);*/
+	uint8_t shift, bit4;
+	uint32_t val_Rm = arm_read_register( p , get_bits(ins, 3, 0) ) ;
+	uint32_t data ;
+	uint8_t sco; //Shifter carry out
+	uint32_t Sop; //Shifter operand
 
-    return execute_ins(p, ins, 0, 0);
+	shift = get_bits(ins, 6, 5);
+	bit4 = get_bit(ins, 4);
+	if( bit4 ){
+		data = arm_read_register( p , get_bits(ins, 11, 8) ) ;
+		do_shift(&Sop, &sco , data , val_Rm , shift,  REG);
+	}
+	else{
+		data = get_bits(ins, 11, 7);
+		do_shift(&Sop, &sco , data , val_Rm ,shift, IMM);
+	}
+
+    return execute_ins(p, ins, Sop, sco);
 }
+
 
 int arm_data_processing_immediate_msr(arm_core p, uint32_t ins) {
 	uint8_t rotImm, imm;
