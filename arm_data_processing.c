@@ -90,11 +90,11 @@ int arm_data_processing_shift(arm_core p, uint32_t ins) {
 	bit4 = get_bit(ins, 4);
 	if( bit4 ){
 		data = arm_read_register( p , get_bits(ins, 11, 8) ) ;
-		do_shift(&Sop, &sco , data , val_Rm , shift,  REG);
+		do_shift(&Sop, &sco , data , val_Rm , shift,  REG , get_bit(arm_read_cpsr(p), C) );
 	}
 	else{
 		data = get_bits(ins, 11, 7);
-		do_shift(&Sop, &sco , data , val_Rm ,shift, IMM);
+		do_shift(&Sop, &sco , data , val_Rm ,shift, IMM , get_bit(arm_read_cpsr(p), C));
 	}
 
     return execute_ins(p, ins, Sop, sco);

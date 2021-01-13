@@ -82,6 +82,6 @@ uint32_t update_flags(uint32_t reg, reg_fields rf, uint32_t res, uint8_t sco);
 
 void mod_bit(uint32_t *reg, int b, int pos);
 
-void do_shift(uint32_t * Sop, uint8_t * sco , uint32_t data , uint32_t val_Rm , uint8_t shift, int mode);
+void do_shift(uint32_t * Sop, uint8_t * sco , uint32_t data , uint32_t val_Rm , uint8_t shift, int mode , uint8_t c);
 
 #endif

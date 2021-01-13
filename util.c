@@ -134,14 +134,16 @@ uint32_t update_flags(uint32_t reg, reg_fields rf, uint32_t res, uint8_t sco){
 
 
 
-void do_shift(uint32_t * Sop, uint8_t * sco , uint32_t data , uint32_t val_Rm ,uint8_t shift , int mode){
+void do_shift(uint32_t * Sop, uint8_t * sco , uint32_t data , uint32_t val_Rm ,uint8_t shift , int mode , uint8_t c){
+uint8_t temp = get_bits(data,7,0);
+uint8_t temp2 = get_bits(val_Rm,4,0);
 switch (mode) {
   case 0 :
           switch (shift) {
             case 0b00:
                           if ( data == 0 ) {
                             *Sop = val_Rm ;
-                            *sco = get_bit(arm_read_cpsr(p), C) ;
+                            *sco = c ;
 
                           }
                           else /* shift_imm > 0 */{
@@ -179,8 +181,8 @@ switch (mode) {
             break ;
             case 0b11:
                           if ( data == 0 ) {
-                            *Sop = ( get_bit(arm_read_cpsr(p), C) >> 31 ) | ( val_Rm << 1) ;
-                            *sco = get_bit(Rm,0);
+                            *Sop = ( c >> 31 ) | ( val_Rm << 1) ;
+                            *sco = get_bit(val_Rm,0);
                           }
                           else /* shift_imm > 0 */{
                             *Sop = ror( val_Rm , data ) ;
@@ -193,10 +195,9 @@ switch (mode) {
 
   break ;
   case 1 :
-        uint8_t temp = get_bits(data,7,0);
         if ( ! temp ){
           *Sop = val_Rm ;
-          *sco = get_bit(arm_read_cpsr(p), C) ;
+          *sco = c ;
         }
         else {
           switch (shift) {
@@ -249,7 +250,6 @@ switch (mode) {
             break ;
 
             case 0b11:
-            uint8_t temp2 = get_bits(val_Rm,4,0);
             if(temp2==0){
               *Sop = val_Rm ;
               *sco = get_bit(val_Rm,31) ;
