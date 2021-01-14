@@ -30,16 +30,10 @@ Contact: Guillaume.Huard@imag.fr
 int execute_ins(arm_core p, uint32_t ins, uint32_t Sop, uint8_t sco){
 	reg_fields rf;
 	uint32_t res;
-<<<<<<< HEAD
 	int x = 0;
 
 	extract_data_proc_fields(ins, &rf, Sop);
 	rf.RnVal = arm_read_register(p, rf.Rn);
-=======
-	int x = 0 ;
-	extract_data_proc_fields(ins, &rf, Sop);
-  rf.RnVal = arm_read_register(p, rf.Rn);
->>>>>>> 886d8be8b93861668156d669976ce06c5ef401c3
 
 	if(cond_valid(rf.cond, arm_read_cpsr(p))){
 		switch(rf.opcode){
