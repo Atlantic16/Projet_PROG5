@@ -65,7 +65,6 @@ int execute_ins(arm_core p, uint32_t ins, uint32_t Sop, uint8_t sco){
 			break;
 			case 0b1111: res = ~ rf.Sop;//MVN
 			break;
-
 		}
 		if (!x ) arm_write_register(p, rf.Rd, res);
 		if(!x && rf.S && rf.Rd == 0b1111){

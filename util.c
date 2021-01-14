@@ -104,7 +104,7 @@ void mod_bit(uint32_t *reg, int b, int pos){
 uint32_t update_flags(uint32_t reg, reg_fields rf, uint32_t res, uint8_t sco){
 	uint32_t maxVal = ~0;
 	uint8_t carryOut = 0;
-	uint8_t lastCarry = (get_bit(rf.Sop, 31) ^ get_bit(rf.RnVal, 31)) == get_bit(res, 31);
+	uint8_t lastCarry = (get_bit(rf.Sop, 31) ^ get_bit(rf.RnVal, 31)) != get_bit(res, 31);
 
 	//Updating N and Z
 	get_bit(res, 31) ? (reg = set_bit(reg, N)) : (reg = clr_bit(reg, N));

@@ -89,7 +89,10 @@ POST_UNINSTALL = :
 @HAVE_ARM_COMPILER_TRUE@noinst_PROGRAMS = example1$(EXEEXT) \
 @HAVE_ARM_COMPILER_TRUE@	example2$(EXEEXT) example3$(EXEEXT) \
 @HAVE_ARM_COMPILER_TRUE@	example4$(EXEEXT) \
-@HAVE_ARM_COMPILER_TRUE@	insertion_sort$(EXEEXT)
+@HAVE_ARM_COMPILER_TRUE@	insertion_sort$(EXEEXT) \
+@HAVE_ARM_COMPILER_TRUE@	tst_sub_sbc_rsb$(EXEEXT) \
+@HAVE_ARM_COMPILER_TRUE@	tst_add_adc$(EXEEXT) \
+@HAVE_ARM_COMPILER_TRUE@	tst_and_eor$(EXEEXT)
 subdir = Examples
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -116,6 +119,15 @@ example4_LDADD = $(LDADD)
 am_insertion_sort_OBJECTS = insertion_sort.$(OBJEXT)
 insertion_sort_OBJECTS = $(am_insertion_sort_OBJECTS)
 insertion_sort_LDADD = $(LDADD)
+am_tst_add_adc_OBJECTS = tst_add_adc.$(OBJEXT)
+tst_add_adc_OBJECTS = $(am_tst_add_adc_OBJECTS)
+tst_add_adc_LDADD = $(LDADD)
+am_tst_and_eor_OBJECTS = tst_and_eor.$(OBJEXT)
+tst_and_eor_OBJECTS = $(am_tst_and_eor_OBJECTS)
+tst_and_eor_LDADD = $(LDADD)
+am_tst_sub_sbc_rsb_OBJECTS = tst_sub_sbc_rsb.$(OBJEXT)
+tst_sub_sbc_rsb_OBJECTS = $(am_tst_sub_sbc_rsb_OBJECTS)
+tst_sub_sbc_rsb_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -151,10 +163,13 @@ am__v_CCAS_ = $(am__v_CCAS_@AM_DEFAULT_V@)
 am__v_CCAS_0 = @echo "  CCAS    " $@;
 am__v_CCAS_1 = 
 SOURCES = $(example1_SOURCES) $(example2_SOURCES) $(example3_SOURCES) \
-	$(example4_SOURCES) $(insertion_sort_SOURCES)
+	$(example4_SOURCES) $(insertion_sort_SOURCES) \
+	$(tst_add_adc_SOURCES) $(tst_and_eor_SOURCES) \
+	$(tst_sub_sbc_rsb_SOURCES)
 DIST_SOURCES = $(example1_SOURCES) $(example2_SOURCES) \
 	$(example3_SOURCES) $(example4_SOURCES) \
-	$(insertion_sort_SOURCES)
+	$(insertion_sort_SOURCES) $(tst_add_adc_SOURCES) \
+	$(tst_and_eor_SOURCES) $(tst_sub_sbc_rsb_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -286,6 +301,9 @@ example2_SOURCES = example2.s
 example3_SOURCES = example3.s
 example4_SOURCES = example4.s
 insertion_sort_SOURCES = insertion_sort.c
+tst_and_eor_SOURCES = tst_and_eor.s
+tst_add_adc_SOURCES = tst_add_adc.s
+tst_sub_sbc_rsb_SOURCES = tst_sub_sbc_rsb.s
 EXTRA_DIST = linker_script
 all: all-am
 
@@ -343,6 +361,18 @@ example4$(EXEEXT): $(example4_OBJECTS) $(example4_DEPENDENCIES) $(EXTRA_example4
 insertion_sort$(EXEEXT): $(insertion_sort_OBJECTS) $(insertion_sort_DEPENDENCIES) $(EXTRA_insertion_sort_DEPENDENCIES) 
 	@rm -f insertion_sort$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(insertion_sort_OBJECTS) $(insertion_sort_LDADD) $(LIBS)
+
+tst_add_adc$(EXEEXT): $(tst_add_adc_OBJECTS) $(tst_add_adc_DEPENDENCIES) $(EXTRA_tst_add_adc_DEPENDENCIES) 
+	@rm -f tst_add_adc$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(tst_add_adc_OBJECTS) $(tst_add_adc_LDADD) $(LIBS)
+
+tst_and_eor$(EXEEXT): $(tst_and_eor_OBJECTS) $(tst_and_eor_DEPENDENCIES) $(EXTRA_tst_and_eor_DEPENDENCIES) 
+	@rm -f tst_and_eor$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(tst_and_eor_OBJECTS) $(tst_and_eor_LDADD) $(LIBS)
+
+tst_sub_sbc_rsb$(EXEEXT): $(tst_sub_sbc_rsb_OBJECTS) $(tst_sub_sbc_rsb_DEPENDENCIES) $(EXTRA_tst_sub_sbc_rsb_DEPENDENCIES) 
+	@rm -f tst_sub_sbc_rsb$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(tst_sub_sbc_rsb_OBJECTS) $(tst_sub_sbc_rsb_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
