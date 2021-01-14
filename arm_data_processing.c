@@ -30,9 +30,10 @@ Contact: Guillaume.Huard@imag.fr
 int execute_ins(arm_core p, uint32_t ins, uint32_t Sop, uint8_t sco){
 	reg_fields rf;
 	uint32_t res;
-	int x = 0 ;
+	int x = 0;
 
-	extract_data_proc_fields(ins, &rf, arm_read_register(p, rf.Rn), Sop);
+	extract_data_proc_fields(ins, &rf, Sop);
+	rf.RnVal = arm_read_register(p, rf.Rn);
 
 	if(cond_valid(rf.cond, arm_read_cpsr(p))){
 		switch(rf.opcode){
@@ -109,7 +110,7 @@ int arm_data_processing_immediate_msr(arm_core p, uint32_t ins) {
 	rotImm = get_bits(ins, 11, 8);
 	imm = get_bits(ins, 7, 0);
 	Sop = ror(imm, rotImm * 2);
-
+	
 	imm ? (sco = get_bit(Sop, 31)) : (sco = get_bit(arm_read_cpsr(p), C));
 
 	return execute_ins(p, ins, Sop, sco);

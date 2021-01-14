@@ -73,7 +73,7 @@ uint32_t jmp_calc(uint32_t jmpTarget, int sign);
 /* Function that extract the common data processing fields
  * Applies changes directely to args
 */
-void extract_data_proc_fields(uint32_t ins, reg_fields *rf, uint32_t RnVal, uint32_t Sop);
+void extract_data_proc_fields(uint32_t ins, reg_fields *rf, uint32_t Sop);
 
 /* Function that update flags in CPSR register
  * Returns updated CPSR

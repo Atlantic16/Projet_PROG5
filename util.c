@@ -87,13 +87,12 @@ uint32_t jmp_calc(uint32_t jmpTarget, int sign){
 	return jmpTarget << 2;
 }
 
-void extract_data_proc_fields(uint32_t ins, reg_fields *rf, uint32_t RnVal, uint32_t Sop){
+void extract_data_proc_fields(uint32_t ins, reg_fields *rf, uint32_t Sop){
 	rf->cond = get_bits(ins, 31, 28);
 	rf->opcode = get_bits(ins, 24, 21);
 	rf->S = get_bit(ins, 20);
 	rf->Rn = get_bits(ins, 19, 16);
 	rf->Rd = get_bits(ins, 15, 12);
-	rf->RnVal = RnVal;
 	rf->Sop = Sop;
 }
 

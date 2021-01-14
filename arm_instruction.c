@@ -31,26 +31,37 @@ Contact: Guillaume.Huard@imag.fr
 static int arm_execute_instruction(arm_core p) {
     uint32_t ins;
     uint8_t class, bit4, bit7;
-
-    if(!arm_fetch(p, &ins)) return 0;
+    if(arm_fetch(p, &ins) == 1) {
+    	printf("Fetching error.\n");
+    	return 0;
+    }
 
     class = get_bits(ins, 27, 25);
     bit4 = get_bit(ins, 4);
     bit7 = get_bit(ins, 7);
 
     switch(class){
-    	case 0b000: 
+    	case 0b000:
     		if(bit4 == 1 && bit7 == 1)
-    			return arm_miscellaneous(p, ins);
+    			//return arm_miscellaneous(p, ins);
+    			return arm_load_store(p, ins);
     		else
     			return arm_data_processing_shift(p, ins);
     	break;
     	case 0b001: return arm_data_processing_immediate_msr(p, ins);
     	break;
+    	case 0b010:
+    	case 0b011: return arm_load_store(p, ins);
+    	break;
+    	case 0b100: return arm_load_store_multiple(p, ins);
+    	break;
     	case 0b101: return arm_branch(p, ins);
     	break;
+    	case 0b110: return arm_coprocessor_load_store(p, ins);
+    	break;
     	case 0b111: return arm_coprocessor_others_swi(p, ins);
-    	default: 
+    	break;
+    	default:
     		printf("Unknown instruction.\n");
     		return 1;
     }
