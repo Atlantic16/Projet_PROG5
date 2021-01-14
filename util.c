@@ -21,6 +21,7 @@ Contact: Guillaume.Huard@imag.fr
 	 38401 Saint Martin d'Hères
 */
 #include "util.h"
+#include <stdio.h>
 
 uint32_t regCPSR;
 
