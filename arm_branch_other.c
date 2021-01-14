@@ -31,13 +31,14 @@ int arm_branch(arm_core p, uint32_t ins) {
 	uint8_t cond = get_bits(ins, N, V);
     uint8_t flagL = get_bit(ins, 24);
     uint32_t jmpTarget = get_bits(ins, 23, 0);
+
     if(cond_valid(cond, arm_read_cpsr(p))){
         if(flagL){
             //If L = 1, we save PC in LR
-            arm_write_register(p, LR, PC);
+            arm_write_register(p, LR, arm_read_register(p, PC) - 4);
         }
-        arm_write_register(p, PC, PC + jmp_calc(jmpTarget, get_bit(ins, 24)));
-        return 0;   
+        arm_write_register(p, PC, arm_read_register(p, PC) + jmp_calc(jmpTarget, get_bit(jmpTarget ,23)));
+        return 0;
     }
     else
 	   return UNDEFINED_INSTRUCTION;

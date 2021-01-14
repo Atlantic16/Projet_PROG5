@@ -101,7 +101,6 @@ int arm_data_processing_shift(arm_core p, uint32_t ins) {
     return execute_ins(p, ins, Sop, sco);
 }
 
-
 int arm_data_processing_immediate_msr(arm_core p, uint32_t ins) {
 	uint8_t rotImm, imm;
 	uint8_t sco; //Shifter carry out
